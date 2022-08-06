@@ -27,10 +27,12 @@ export default function KanbanBoard(props) {
 
  	const handleCreate = (e)=>{
 		e.preventDefault();
-		let tasksCopy = [...tasks];
-		tasksCopy.push({ id: randID(), name:inputTaskRef.current.value , stage: 0});
-		setTasks(tasksCopy);
-		inputTaskRef.current.value = "";
+		if(inputTaskRef.current.value){
+			let tasksCopy = [...tasks];
+			tasksCopy.push({ id: randID(), name:inputTaskRef.current.value , stage: 0});
+			setTasks(tasksCopy);
+			inputTaskRef.current.value = "";
+		}
 	}
 
 	const handleDelete = (id)=>{
