@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./index.css"
 
 export default function KanbanBoard(props) { 
@@ -10,8 +10,10 @@ export default function KanbanBoard(props) {
 
 	let [stagesNames, setStagesNames] = React.useState(['Backlog', 'To Do', 'Ongoing', 'Done']);
 
+	let inputTaskRef = React.createRef();
 
-	let stagesTasks = [];
+	
+	var stagesTasks = [];
 	for (let i = 0; i < stagesNames.length; ++i) {
 		stagesTasks.push([]);
 	}
@@ -20,11 +22,24 @@ export default function KanbanBoard(props) {
 		stagesTasks[stageId].push(task);
 	}
 
+ 	const handleCreate = (e)=>{
+		e.preventDefault();
+		let tasksCopy = [...tasks];
+		tasksCopy.push({name:inputTaskRef.current.value , stage: 0});
+		setTasks(tasksCopy);
+	}
+
+	const handleDelete = (index)=>{
+		const newTasks = tasks.filter((item, i) => i !== index)
+		setTasks(newTasks);
+	}
 	return (
 		<div className="mt-20 layout-column justify-content-center align-items-center">
 			<section className="mt-50 layout-row align-items-center justify-content-center">
-				<input id="create-task-input" type="text" className="large" placeholder="New task name" data-testid="create-task-input" />
-				<button type="submit" className="ml-30" data-testid="create-task-button">Create task</button>
+			<form className="form-signin" onSubmit={handleCreate}>
+				<input id="create-task-input" type="text" className="large" placeholder="New task name" data-testid="create-task-input" ref={inputTaskRef} />
+				<button type="submit" className="ml-30" data-testid="create-task-button" >Create task</button>
+				</form>
 			</section>
 
 			<div className="mt-50 layout-row">
@@ -45,7 +60,10 @@ export default function KanbanBoard(props) {
 													<button className="icon-only x-small mx-2" data-testid={`${task.name.split(' ').join('-')}-forward`}>
 														<i className="material-icons">arrow_forward</i>
 													</button>
-													<button className="icon-only danger x-small mx-2" data-testid={`${task.name.split(' ').join('-')}-delete`}>
+													<button className="icon-only danger x-small mx-2" data-testid={`${task.name.split(' ').join('-')}-delete`} 
+													            onClick={() => handleDelete(index)}
+
+													>
 														<i className="material-icons">delete</i>
 													</button>
 												</div>
